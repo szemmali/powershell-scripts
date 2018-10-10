@@ -1,9 +1,9 @@
 ##=================================================================================
-##       Project:  Unify
+##       Project:  Powershell Scripts
 ##        AUTHOR:  SADDAM ZEMMALI
-##         eMail:  Optim_Services_IT@ooredoo.tn
+##         eMail:  --
 ##       CREATED:  10.02.2018 10:22:01
-##      REVISION:  Optim Professional Services
+##      REVISION:  SZEMMALI Professional Services
 ##       Version:  0.1  ¯\_(ツ)_/¯
 ##    Repository:  
 ##          Task:  Change Path Selection Policy for ESXI Hosts
@@ -18,7 +18,7 @@ Set-PowerCLIConfiguration -InvalidCertificateAction ignore -confirm:$false
 #################################
 #    VMware vCenter server name # 
 #################################  
-$vCenterList = Get-Content "vCenter.txt"
+$vCenterList = Get-Content vCenter.txt
 $username = 'administrator@vsphere.local'
 $password = Read-Host 'Enter The vCenter Password' -AsSecureString  
 
