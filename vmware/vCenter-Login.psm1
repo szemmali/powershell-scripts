@@ -1,7 +1,7 @@
 #vCenter-Login
 function vCenter-Login {
   begin {
-    $vcenter = "VCENTER_FQDN"
+    $vcenter = Read-Host 'Enter The VCENTER FQDN'
     $username = Read-Host 'Enter The vCenter Username'
     $password = Read-Host 'Enter The vCenter Password' -AsSecureString    
     $vccredential = New-Object System.Management.Automation.PSCredential ($username, $password)
