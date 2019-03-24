@@ -18,6 +18,35 @@
 ##          Note:  Connect With USERNAME/PASSWORD Credential 
 ##          BUGS:  Set-ExecutionPolicy -ExecutionPolicy Bypass
 ##=========================================================================================
+##########################
+# Function to PowerOn-VM # 
+##########################
+Function PowerOn-VM($vm){
+   Start-VM -VM $vm -Confirm:$false -RunAsync | Out-Null
+   Write-Host "$vm is starting!"
+   sleep 5
+   $time = 1
+   # Now check if the VM is started within 120 loops with each 5 seconds of waittime
+   do {
+      $vmview = Get-VM $VM | Get-View
+      $getvm = Get-VM $vm
+      $powerstate = $getvm.PowerState
+      $toolsstatus = $vmview.Guest.ToolsRunningStatus
+      Write-Host "$vm is starting, powerstate is $powerstate and toolsstatus is $toolsstatus!"
+      sleep 5
+      $time++
+   # Adjust the timer $time to wait longer or shorter for the VM to start up. Lowering this value will not break anything, you'll just have to check manually whether the VM started successfully.
+   }until((($powerstate -match "PoweredOn") -and ($toolsstatus -match "guestToolsRunning")) -or ($time -eq 2))
+   if ($toolsstatus -match "guestToolsRunning"){
+      Write-Host "$vm is started and has ToolsStatus $toolsstatus"
+   }
+    else{$Startup = "ERROR"}
+    return $Startup
+}
+
+#####################################################
+# Function to Extend the Hard Disk for list of VMs  # 
+#####################################################
 Function Extend-HardDisk { 
 	param(
 	  [string]$VMs
@@ -33,7 +62,6 @@ Function Extend-HardDisk {
 		# Hard Disk Informations 
 		$HardDiskId = Read-Host "Enter VMware Hard Disk (Ex. 1)"
 		$NewHDSize = Read-Host "Enter the new Hard Disk size in GB (Ex. 50)"
-		$VolumeLetter = Read-Host "Enter the volume letter (Ex. c,d,e,f)"
 		$HardDisk = "Hard Disk " + $HardDiskId
 		Disconnect-VIServer  -Force -confirm:$false  -ErrorAction SilentlyContinue -WarningAction 0 | Out-Null
 	}
@@ -47,17 +75,35 @@ Function Extend-HardDisk {
 			Write-Host "Connected" -Foregroundcolor "Green"
 			foreach ($VM in $VMs) {
 				# Extend the Hard Disk for each VM
-				Get-VM $VM | Get-HardDisk | Where-Object {$_.Name -eq "$HardDisk"} | Set-HardDisk -CapacityGB $NewHDSize -Confirm:$false
-				
+				$VMdetails =Get-VM $VM
+				$VMdetails | Get-HardDisk | Where-Object {$_.Name -eq "$HardDisk"} | Set-HardDisk -CapacityGB $NewHDSize -Confirm:$false
+				# Check The OS
+
 				# Check for Windows Machines
-				if (Get-VMguest -VM $vm | Where-Object {$_.OSFullName -like "*Microsoft*"}){
-					# Run DISKPART in the guest OS 
-					Invoke-VMScript -vm $VM -ScriptText "echo rescan > c:\diskpart.txt && echo select vol $VolumeLetter >> c:\diskpart.txt && echo extend >> c:\diskpart.txt && diskpart.exe /s c:\diskpart.txt" -ScriptType BAT
+				if ({$VMdetails.Guest.OSFullName -like "*Microsoft*"}){
+					# Check the status of the Machines
+					$VolumeLetter = Read-Host "Enter the volume letter (Ex. c,d,e,f)"
+					# If status == PowerOff	
+					if ($VMdetails.PowerState -eq "PoweredOff" ) {
+					    # PowerOn The VM
+					    PowerOn-VM($vm)
+
+						# Run DISKPART in the guest OS 
+						Invoke-VMScript -vm $VM -ScriptText "echo rescan > c:\diskpart.txt && echo select vol $VolumeLetter >> c:\diskpart.txt && echo extend >> c:\diskpart.txt && diskpart.exe /s c:\diskpart.txt" -ScriptType BAT
+					}
+
+					# If status == PowerOn
+					else {
+						# Run DISKPART in the guest OS 
+						Invoke-VMScript -vm $VM -ScriptText "echo rescan > c:\diskpart.txt && echo select vol $VolumeLetter >> c:\diskpart.txt && echo extend >> c:\diskpart.txt && diskpart.exe /s c:\diskpart.txt" -ScriptType BAT
+					}
 				}
-				
+
+				# Check for Linux Machines
 				else {
-					# Run DISKPART in the guest OS 
-					Invoke-VMScript -vm $VM -ScriptText "echo rescan > c:\diskpart.txt && echo select vol $VolumeLetter >> c:\diskpart.txt && echo extend >> c:\diskpart.txt && diskpart.exe /s c:\diskpart.txt" -ScriptType BAT
+					Write-Host "For the other OS"
+					Write-Host "Could you please review this runbook: https://corewiki.cimpress.net/wiki/Extending_partition_on_linux_vmware_virtual_machine"
+					start 'https://corewiki.cimpress.net/wiki/Extending_partition_on_linux_vmware_virtual_machine'
 				}
 			}
 		}		
