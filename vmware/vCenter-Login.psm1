@@ -2,11 +2,11 @@
 ##       Project:  Powershell scripts for VMware
 ##        AUTHOR:  SADDAM ZEMMALI
 ##         eMail:  saddam.zemmali@gmail.com
-##       CREATED:  01.01.2019 10:03:00
+##       CREATED:  03.24.2019 10:03:00
 ##      REVISION:  --
 ##       Version:  1.0  ¯\_(ツ)_/¯
-##    Repository:  
-##          Task:  Script IIS Reset for IIS CPU/RAM Issue on WWW/SECURE and IMAGE servers
+##    Repository:  https://github.com/szemmali/powershell-scripts/
+##          Task:  Powershell Function to Login in vCenter
 ##          FILE:  Function-Reset-IIS.psm1
 ##   Description:  Function vCenter-Login
 ##   Requirement:  --
