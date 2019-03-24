@@ -102,8 +102,8 @@ Function Extend-HardDisk {
 				# Check for Linux Machines
 				else {
 					Write-Host "For the other OS"
-					Write-Host "Could you please review this runbook: https://corewiki.cimpress.net/wiki/Extending_partition_on_linux_vmware_virtual_machine"
-					start 'https://corewiki.cimpress.net/wiki/Extending_partition_on_linux_vmware_virtual_machine'
+					Write-Host "https://www.techrepublic.com/blog/smb-technologist/extending-partitions-on-linux-vmware-virtual-machines/"
+					start 'https://www.techrepublic.com/blog/smb-technologist/extending-partitions-on-linux-vmware-virtual-machines/'
 				}
 			}
 		}		
