@@ -2,13 +2,13 @@
 ##       Project:  Powershell scripts for VMware
 ##        AUTHOR:  SADDAM ZEMMALI
 ##         eMail:  saddam.zemmali@gmail.com
-##       CREATED:  01.01.2019 10:03:00
+##       CREATED:  03.24.2019 10:03:00
 ##      REVISION:  --
 ##       Version:  1.0  ¯\_(ツ)_/¯
-##    Repository:  
-##          Task:  Script IIS Reset for IIS CPU/RAM Issue on WWW/SECURE and IMAGE servers
-##          FILE:  Function-Reset-IIS.psm1
-##   Description:  Function vCenter-Login
+##    Repository:  https://github.com/szemmali/powershell-scripts/
+##          Task:  Powershell funtion to Logout from vCenter 
+##          FILE:  vCenter-Logout.psm1
+##   Description:  Function vCenter-Logout
 ##   Requirement:  --
 ##          Note:  -- 
 ##       Example:  vCenter-Logout "*"       #  Logout from all vcenter 
